@@ -83,7 +83,7 @@ class AlienInvasion:
     def _fire_bullet(self):
         """Create a new bullet and add it to the bullets group."""
         if len(self.bullets) < self.settings.bullets_allowed:
-            new_bullet = Bullet(self)
+            new_bullet = Bullet(self, self.ship.direction)
             self.bullets.add(new_bullet)
 
     def _update_bullets(self):
@@ -93,7 +93,7 @@ class AlienInvasion:
 
         # Get rid of bullets that have disappeared.
         for bullet in self.bullets.copy():
-            if bullet.rect.bottom <= 0:
+            if bullet.rect.bottom <= 0 or bullet.rect.top >= self.screen.get_rect().bottom or bullet.rect.left <= 0 or bullet.rect.right >= self.screen.get_rect().right:
                 self.bullets.remove(bullet)
 
         # self._check_bullet_alien_collisions()
