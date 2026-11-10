@@ -5,12 +5,13 @@ from pygame.sprite import Sprite
 class Bullet(Sprite):
     """A class to manage bullets fired from the ship."""
 
-    def __init__(self, ai_game, direction):
+    def __init__(self, ai_game, ship):
         """Create a bullet object at the ship's current position."""
         super().__init__()
         self.screen = ai_game.screen
         self.settings = ai_game.settings
         self.color = self.settings.bullet_color
+
 
         # Create a bullet rect at (0, 0) and then set correct position.
         """
@@ -21,14 +22,14 @@ class Bullet(Sprite):
         base_image.fill(self.color)
 
         # set direction
-        self.direction = direction
+        self.direction = ship.direction
 
         # make bullet face direction
-        self.image = pygame.transform.rotate(base_image, -math.degrees(direction))
+        self.image = pygame.transform.rotate(base_image, -math.degrees(ship.direction))
 
         # 4. Position the bullet at the ship's midpoint/firing point
         self.rect = self.image.get_rect()
-        self.rect.center = ai_game.ship.rect.midtop
+        self.rect.center = ship.rect.midtop
 
         # Store the bullet's position as a float.
         self.y = float(self.rect.y)
