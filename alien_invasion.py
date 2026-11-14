@@ -1,7 +1,7 @@
 import sys
 from time import sleep
 
-import pygame
+import pygame, math
 
 from settings import Settings
 from game_stats import GameStats
@@ -26,7 +26,9 @@ class AlienInvasion:
         # Create an instance to store game statistics.
         self.stats = GameStats(self)
 
-        self.player1 = Ship(self)
+        # ryan: i added a lot of args, check ship.py for arg names
+        self.player1 = Ship(self, 'images/ship.bmp', (self.settings.screen_width // 2, self.settings.screen_height - 100), math.pi, (192, 192, 192))
+        self.player2 = Ship(self, 'images/ship2.png', (self.settings.screen_width // 2, 100), 0, (0, 0, 0))
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
 
@@ -48,6 +50,7 @@ class AlienInvasion:
             
             if self.game_active:
                 self.player1.update()
+                self.player2.update()
                 self._update_bullets()
                 # self._update_aliens()
 
@@ -69,22 +72,24 @@ class AlienInvasion:
         if event.key == self.p1turn:
             self.player1.turning = True
         if event.key == self.p1shoot:
-            self._fire_bullet()
+            self._fire_bullet(self.player1)
         if event.key == self.p2turn:
-            sys.exit()
+            self.player2.turning = True
         if event.key == self.p2shoot:
-            self._fire_bullet()
+            self._fire_bullet(self.player2)
 
     def _check_keyup_events(self, event):
         """Respond to key releases."""
         if event.key == self.p1turn:
             self.player1.turning = False
+        if event.key == self.p2turn:
+            self.player2.turning = False
 
-    def _fire_bullet(self):
+    def _fire_bullet(self, ship):
         """Create a new bullet and add it to the bullets group."""
-        if len(self.bullets) < self.settings.bullets_allowed:
-            new_bullet = Bullet(self, self.player1)
-            self.bullets.add(new_bullet)
+        if ship.bullets_active < self.settings.bullets_allowed:
+            ship.bullets_active += 1
+            self.bullets.add(Bullet(self, ship))
 
     def _update_bullets(self):
         """Update position of bullets and get rid of old bullets."""
@@ -94,6 +99,7 @@ class AlienInvasion:
         # Get rid of bullets that have disappeared.
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0 or bullet.rect.top >= self.screen.get_rect().bottom or bullet.rect.left <= 0 or bullet.rect.right >= self.screen.get_rect().right:
+                bullet.owner.bullets_active -= 1
                 self.bullets.remove(bullet)
 
         # self._check_bullet_alien_collisions()
@@ -135,6 +141,7 @@ class AlienInvasion:
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.player1.blitme()
+        self.player2.blitme()
         self.aliens.draw(self.screen)
 
         pygame.display.flip()

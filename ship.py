@@ -5,36 +5,28 @@ import math
 class Ship:
     """A class to manage the ship."""
 
-    def __init__(self, ai_game):
+    def __init__(self, ai_game, image_path, center, direction, bullet_color):
         """Initialize the ship and set its starting position."""
         self.screen = ai_game.screen
         self.settings = ai_game.settings
         self.screen_rect = ai_game.screen.get_rect()
 
         # Load the ship image and get its rect.
-        self.og_image = pygame.image.load('images/ship.bmp').convert_alpha()
-        self.image = self.og_image
-        self.rect = self.image.get_rect()
-
-        # Start each new ship at the bottom center of the screen.
-        # self.rect.midbottom = self.screen_rect.midbottom
-        self.rect.midbottom = self.screen_rect.center
-
-        # Store a float for the ship's exact position.
-        self.x = float(self.rect.x)
-        self.y = float(self.rect.y)
-
-        # Movement flags; start with a ship that's not moving.
+        self.og_image = pygame.image.load(image_path).convert_alpha()
+        self.start_center = center
+        self.start_direction = direction
         self.turning = False
-
-        # set direction of ship to face up.
-        self.direction = math.pi
-        self.direction_vec = pygame.math.Vector2(self.x, self.y)
+        self.bullets_active = 0
+        self.bullet_color = bullet_color
+        self.center_ship()
 
     def center_ship(self):
-        """Center the ship on the screen."""
-        self.rect.midbottom = self.screen_rect.midbottom
+        """Centers ship on screen."""
+        self.direction = self.start_direction
+        self.image = pygame.transform.rotate(self.og_image, 180 + 180 * self.direction / math.pi)
+        self.rect = self.image.get_rect(center=self.start_center)
         self.x = float(self.rect.x)
+        self.y = float(self.rect.y)
 
     def update(self):
         """Update the ship's position based on movement flags."""
