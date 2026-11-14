@@ -25,7 +25,7 @@ class Bullet(Sprite):
         self.direction = ship.direction
 
         # make bullet face direction
-        self.image = pygame.transform.rotate(base_image, -math.degrees(ship.direction))
+        self.image = pygame.transform.rotate(base_image, math.degrees(ship.direction))
 
         # 4. Position the bullet at the ship's midpoint/firing point
         self.rect = self.image.get_rect()
@@ -46,4 +46,4 @@ class Bullet(Sprite):
 
     def draw_bullet(self):
         """Draw the bullet to the screen."""
-        pygame.draw.rect(self.screen, self.color, self.rect)
+        self.screen.blit(self.image, self.rect)
