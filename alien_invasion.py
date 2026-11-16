@@ -42,6 +42,7 @@ class AlienInvasion:
 
         # Start Alien Invasion in an active state.
         self.game_active = True
+        self.winner = None
 
     def run_game(self):
         """Start the main loop for the game."""
@@ -99,6 +100,14 @@ class AlienInvasion:
                 target_ship.hp-=10
                 bullet.owner.bullets_active=bullet.owner.bullets_active-1
                 self.bullets.remove(bullet)
+
+                if target_ship.hp==0:
+                    if target_ship is self.player1:
+                        self.winner = "PLAYER 2"
+                    else:
+                        self.winner = "PLAYER 1"
+
+                    self.game_active = False
 
     def _fire_bullet(self, ship):
         """Create a new bullet and add it to the bullets group."""
@@ -199,6 +208,16 @@ class AlienInvasion:
 
             pygame.draw.rect(self.screen, (20,20,20), bar_rect, 2)
 
+    def _draw_winner(self):
+        '''Display for victorious player'''
+        font = pygame.font.SysFont(None, 100)
+
+        text = font.render(f"{self.winner} WINS", True, (0,128,0))
+        text_rect=text.get_rect(center=self.screen.get_rect().center)
+
+        self.screen.blit(text, text_rect)
+
+
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
         self.screen.fill(self.settings.bg_color)
@@ -208,6 +227,9 @@ class AlienInvasion:
         self.player2.blitme()
         self.aliens.draw(self.screen)
         self._draw_health_bars()
+
+        if self.winner is not None:
+            self._draw_winner()
 
         pygame.display.flip()
 
