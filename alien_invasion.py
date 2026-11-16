@@ -30,8 +30,8 @@ class AlienInvasion:
         self.stats = GameStats(self)
 
         # ryan: i added a lot of args, check ship.py for arg names
-        self.player1 = Ship(self, 'images/ship_rev.png', (self.settings.screen_width // 2, self.settings.screen_height - 100), math.pi, (192, 192, 192))
-        self.player2 = Ship(self, 'images/ship2_rev.png', (self.settings.screen_width // 2, 100), 0, (0, 0, 0))
+        self.player1 = Ship(self, 'images/ship_rev.png', (self.settings.screen_width // 2, self.settings.screen_height - 100), math.pi, (237, 28, 36))
+        self.player2 = Ship(self, 'images/ship2_rev.png', (self.settings.screen_width // 2, 100), 0, (47, 54, 153))
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
 
