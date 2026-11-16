@@ -20,6 +20,10 @@ class Ship:
         self.bullet_color = bullet_color
         self.center_ship()
 
+        #hp
+        self.max_hp=100
+        self.hp=self.max_hp
+
     def center_ship(self):
         """Centers ship on screen."""
         self.direction = self.start_direction

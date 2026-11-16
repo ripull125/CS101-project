@@ -85,6 +85,21 @@ class AlienInvasion:
         if event.key == self.p2turn:
             self.player2.turning = False
 
+    def _check_bullet_ship_collisions(self):
+        for bullet in list(self.bullets):
+            if bullet.owner is self.player1:
+                target_ship=self.player2
+
+            elif bullet.owner is self.player2:
+                target_ship=self.player1
+            else:
+                continue
+
+            if bullet.rect.colliderect(target_ship.rect):
+                target_ship.hp-=10
+                bullet.owner.bullets_active=bullet.owner.bullets_active-1
+                self.bullets.remove(bullet)
+
     def _fire_bullet(self, ship):
         """Create a new bullet and add it to the bullets group."""
         if ship.bullets_active < self.settings.bullets_allowed:
@@ -102,6 +117,7 @@ class AlienInvasion:
                 bullet.owner.bullets_active -= 1
                 self.bullets.remove(bullet)
 
+        self._check_bullet_ship_collisions()
         # self._check_bullet_alien_collisions()
         
 
@@ -135,6 +151,54 @@ class AlienInvasion:
         else:
             self.game_active = False
 
+    def _draw_health_bars(self):
+        '''Display for health bars for both ships'''
+        bar_width=220
+        bar_height=18
+        icon_size=42
+        margin=20
+        top=20
+
+        players = [(self.player1, "PLAYER 1", "left"), 
+                    (self.player2, "PLAYER 2", "right"),]
+
+        for ship, label, side in players:
+            icon = pygame.transform.smoothscale(ship.og_image, (icon_size, icon_size))
+
+            if side == "left":
+                icon_rect = pygame.Rect(margin, top, icon_size, icon_size)
+                bar = icon_rect.right+10
+
+            else:
+                icon_rect = pygame.Rect(self.settings.screen_width-margin-icon_size, top, icon_size, icon_size)
+                bar = icon_rect.left-10-bar_width
+
+            self.screen.blit(icon, icon_rect)
+
+            bar_rect=pygame.Rect(bar, top, bar_width, bar_height)
+
+            health_fraction = ship.hp/ship.max_hp
+
+            fill_rect=bar_rect.copy()
+            fill_rect.width = round(bar_width * health_fraction)
+
+            if health_fraction > 0.7:
+                health_color=(0,128,0) #green
+
+            elif health_fraction > 0.5:
+                health_color=(154, 205, 50) #greenish-yellow
+
+            elif health_fraction > 0.25:
+                health_color=(225, 225, 0) #yellow
+
+            else:
+                health_color=(225, 0, 0) #red
+
+            if fill_rect.width>0:
+                pygame.draw.rect(self.screen, health_color, fill_rect)
+
+            pygame.draw.rect(self.screen, (20,20,20), bar_rect, 2)
+
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
         self.screen.fill(self.settings.bg_color)
@@ -143,6 +207,7 @@ class AlienInvasion:
         self.player1.blitme()
         self.player2.blitme()
         self.aliens.draw(self.screen)
+        self._draw_health_bars()
 
         pygame.display.flip()
 
