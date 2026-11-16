@@ -232,10 +232,12 @@ class AlienInvasion:
         self.player1.hp = self.player1.max_hp
         self.player1.bullets_active = 0
         self.player1.turning = False
+        self.player1.center_ship()
 
         self.player2.hp = self.player2.max_hp
         self.player2.bullets_active = 0
         self.player2.turning = False
+        self.player2.center_ship()
         
         self.bullets.empty()
         self.winner=None
