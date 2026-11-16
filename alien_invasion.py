@@ -70,6 +70,10 @@ class AlienInvasion:
 
     def _check_keydown_events(self, event):
         """Respond to keypresses."""
+        if event.key == pygame.K_r and self.winner is not None:
+            self._restart_game()
+            return
+
         if event.key == self.p1turn:
             self.player1.turning = True
         if event.key == self.p1shoot:
@@ -211,11 +215,31 @@ class AlienInvasion:
     def _draw_winner(self):
         '''Display for victorious player'''
         font = pygame.font.SysFont(None, 100)
-
-        text = font.render(f"{self.winner} WINS", True, (0,128,0))
+        text = font.render(f"{self.winner} WINS", True, (106, 137, 167))
         text_rect=text.get_rect(center=self.screen.get_rect().center)
 
         self.screen.blit(text, text_rect)
+
+        r_font = pygame.font.SysFont(None, 50)
+        r_text = r_font.render(f"Press R to Restart", True, (102, 153, 204))
+        r_rect = r_text.get_rect(center=(self.screen.get_rect().centerx, text_rect.bottom+20))
+
+        self.screen.blit(r_text, r_rect)
+
+    def _restart_game(self):
+        '''Sets game_active to true and resets all values of ship objects'''
+
+        self.player1.hp = self.player1.max_hp
+        self.player1.bullets_active = 0
+        self.player1.turning = False
+
+        self.player2.hp = self.player2.max_hp
+        self.player2.bullets_active = 0
+        self.player2.turning = False
+        
+        self.bullets.empty()
+        self.winner=None
+        self.game_active=True
 
 
     def _update_screen(self):
