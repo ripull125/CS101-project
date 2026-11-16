@@ -11,8 +11,7 @@ class Bullet(Sprite):
         self.owner = ship
         self.screen = ai_game.screen
         self.settings = ai_game.settings
-        self.color = ship.bullet_color
-
+        self.color = (128, 0, 0)
         # Create a bullet rect at (0, 0) and then set correct position.
         """
         self.rect = pygame.Rect(0, 0, self.settings.bullet_width,
@@ -27,9 +26,9 @@ class Bullet(Sprite):
         # make bullet face direction
         self.image = pygame.transform.rotate(base_image, math.degrees(ship.direction))
 
-        # 4. Position the bullet at the ship's midpoint/firing point
+        # Position the bullet at the ship's midpoint/firing point
         self.rect = self.image.get_rect()
-        self.rect.center = ship.rect.midtop
+        self.rect.center = ship.rect.center
 
         # Store the bullet's position as a float.
         self.y = float(self.rect.y)

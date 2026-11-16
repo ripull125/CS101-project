@@ -21,14 +21,17 @@ class AlienInvasion:
 
         self.screen = pygame.display.set_mode(
             (self.settings.screen_width, self.settings.screen_height))
+        self.background = pygame.image.load("images/background.jpg").convert()
+        self.background = pygame.transform.scale(self.background, (self.settings.screen_width, self.settings.screen_height))
+
         pygame.display.set_caption("Alien Invasion")
 
         # Create an instance to store game statistics.
         self.stats = GameStats(self)
 
         # ryan: i added a lot of args, check ship.py for arg names
-        self.player1 = Ship(self, 'images/ship.bmp', (self.settings.screen_width // 2, self.settings.screen_height - 100), math.pi, (192, 192, 192))
-        self.player2 = Ship(self, 'images/ship2.png', (self.settings.screen_width // 2, 100), 0, (0, 0, 0))
+        self.player1 = Ship(self, 'images/ship_rev.png', (self.settings.screen_width // 2, self.settings.screen_height - 100), math.pi, (192, 192, 192))
+        self.player2 = Ship(self, 'images/ship2_rev.png', (self.settings.screen_width // 2, 100), 0, (0, 0, 0))
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
 
@@ -215,13 +218,13 @@ class AlienInvasion:
     def _draw_winner(self):
         '''Display for victorious player'''
         font = pygame.font.SysFont(None, 100)
-        text = font.render(f"{self.winner} WINS", True, (106, 137, 167))
+        text = font.render(f"{self.winner} WINS", True, (255, 255, 255))
         text_rect=text.get_rect(center=self.screen.get_rect().center)
 
         self.screen.blit(text, text_rect)
 
         r_font = pygame.font.SysFont(None, 50)
-        r_text = r_font.render(f"Press R to Restart", True, (102, 153, 204))
+        r_text = r_font.render(f"Press R to Restart", True, (255, 255, 255))
         r_rect = r_text.get_rect(center=(self.screen.get_rect().centerx, text_rect.bottom+20))
 
         self.screen.blit(r_text, r_rect)
@@ -246,7 +249,7 @@ class AlienInvasion:
 
     def _update_screen(self):
         """Update images on the screen, and flip to the new screen."""
-        self.screen.fill(self.settings.bg_color)
+        self.screen.blit(self.background, (0,0))
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
         self.player1.blitme()
